@@ -258,7 +258,7 @@ class Background(pygame.sprite.Sprite):
     def __init__(self,bk_img):
         self.image = pygame.image.load()
         self.image.convert()
-        #seguir...
+        #am gonna update the scrolling background
 '''
 Add class to world
 '''
