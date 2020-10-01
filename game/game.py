@@ -285,12 +285,15 @@ enemy_list.add(enemy)
 #enemy_1 = Enemy(width/2 ,height/2,"serpiente")
 #enemy_list.add(enemy_1)
 
-enemies = []  #list of enemies
+'''enemies = []  #list of enemies
 
 for i in range(0,3):
     enemies.append(Enemy(width/2 ,height/2,"serpiente"))
 
-enemy_list.add(enemies)
+enemy_list.add(enemies)'''
+
+'''class Level():
+    def(lvl,eloc)'''
 
 # add backround
 background = pygame.image.load(os.path.join('images','topera_background.png')).convert()
