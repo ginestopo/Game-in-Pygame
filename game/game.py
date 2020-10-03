@@ -150,6 +150,16 @@ class Player(pygame.sprite.Sprite):
         position = [position_x,position_y]
         return position
 
+    def gravity(self):
+        self.movey += 0.3 #falling speed
+
+        global height
+        if self.rect.y > height and self.movey >= 0:
+            self.movey = 0
+            self.rect.y = height - 40
+
+
+
 class Enemy(pygame.sprite.Sprite):
 
     def __init__(self,x,y,img):
@@ -161,6 +171,9 @@ class Enemy(pygame.sprite.Sprite):
         self.moving_time = 0          #time the sprite will be moving
         self.flip_enemy = False
         self.frame_count = 0          #timing for moving randomly the enemy
+
+        #gravity
+        self.movey = 0
 
 
 
@@ -189,7 +202,7 @@ class Enemy(pygame.sprite.Sprite):
     def update(self):
         #code to move enemy
         #self.rect.x = self.rect.x
-        #self.rect.y = self.rect.y
+        self.rect.y += self.movey
 
 
         if(self.frame_count==0):
@@ -254,11 +267,22 @@ class Enemy(pygame.sprite.Sprite):
                     self.image = pygame.transform.flip(self.image,True,False)  #vertically mirror
 
         self.frame_count += 1
+
+    def gravity(self):
+        self.movey += 0.3 #how far the enemy falls
+
+        global height
+        if self.rect.y > height and self.movey >= 0:
+            self.movey = 0
+            self.rect.y = 50
+
+
 class Background(pygame.sprite.Sprite):
     def __init__(self,bk_img):
         self.image = pygame.image.load()
         self.image.convert()
         #am gonna update the scrolling background
+
 '''
 Add class to world
 '''
@@ -266,7 +290,7 @@ Add class to world
 player = Player() #we spawn the Player
 #POSITION
 player.rect.x = width/2 #go to x
-player.rect.y = height/2 #go to y
+player.rect.y = height/4 #go to y
 player_list = pygame.sprite.Group()
 player_list.add(player)
 steps = 10 #pixels to move character
@@ -278,23 +302,14 @@ scrolling = "neutral"   #"left" "right" "neutral"
 #SPAWN ENEMY (snake)
 steps_enemy = 5
 
-'''enemies = []  #list of enemies
+enemies = []  #list of enemies
 
-for i in range(0,3):
+for i in range(0,2):
     enemies.append(Enemy(width/2 ,height/2,"serpiente"))
 
-enemy_list.add(enemies)'''
+enemy_list = pygame.sprite.Group()
+enemy_list.add(enemies)
 
-class Level():
-    def bad(lvl,enemy_location):
-        if lvl == 1:
-            enemy = Enemy(enemy_location[0],enemy_location[1],"serpiente")
-            enemy_list = pygame.sprite.Group()
-            enemy_list.add(enemy)
-        if lvl == 2:
-            print("Level: "+str(lvl))
-
-    return enemy_list
 
 # add backround
 background = pygame.image.load(os.path.join('images','topera_background.png')).convert()
@@ -357,14 +372,14 @@ while main == True:
 
   # Update.
   slowdown += 1 #slows down animation using %
+  player.gravity()
   player.update()   #updates the character position
 
 
-  enemy.update()
-  #enemy_1.update()
-  for obj in enemies:
-      obj.update()
 
+  for obj in enemies:
+      obj.gravity()
+      obj.update()
 
   # draw
   main_surface.fill(BLACK)
