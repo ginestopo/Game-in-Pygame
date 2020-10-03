@@ -278,13 +278,6 @@ scrolling = "neutral"   #"left" "right" "neutral"
 #SPAWN ENEMY (snake)
 steps_enemy = 5
 
-enemy = Enemy(width/2 ,height/2,"serpiente")
-enemy_list = pygame.sprite.Group() #create group of enemies
-enemy_list.add(enemy)
-
-#enemy_1 = Enemy(width/2 ,height/2,"serpiente")
-#enemy_list.add(enemy_1)
-
 '''enemies = []  #list of enemies
 
 for i in range(0,3):
@@ -292,8 +285,16 @@ for i in range(0,3):
 
 enemy_list.add(enemies)'''
 
-'''class Level():
-    def(lvl,eloc)'''
+class Level():
+    def bad(lvl,enemy_location):
+        if lvl == 1:
+            enemy = Enemy(enemy_location[0],enemy_location[1],"serpiente")
+            enemy_list = pygame.sprite.Group()
+            enemy_list.add(enemy)
+        if lvl == 2:
+            print("Level: "+str(lvl))
+
+    return enemy_list
 
 # add backround
 background = pygame.image.load(os.path.join('images','topera_background.png')).convert()
