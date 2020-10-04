@@ -60,9 +60,12 @@ class Player(pygame.sprite.Sprite):
         #variables for moving the character
         self.movex = 0
         self.movey = 0
-        self.frame = 0
+        self.frame = 0       #for sprite animation
+        self.frame_count = 0 #for slowing down taking damage
 
         self.facing_direction = True
+
+        self.health = 10
 
 
         for i in range(1,5):
@@ -87,6 +90,8 @@ class Player(pygame.sprite.Sprite):
 
 
     def update(self):
+        self.frame_count += 1
+
         global width
         global scrolling
         right_margin = width-120
@@ -144,6 +149,17 @@ class Player(pygame.sprite.Sprite):
             if self.facing_direction == False:
                 self.image = pygame.transform.flip(self.image,True,False)  #vertically mirror
 
+        #collision
+        hit_list = pygame.sprite.spritecollide(self,enemy_list,False)
+        for enemy in hit_list:
+            if self.frame_count > 30:
+                self.health -= 1
+                print(self.health)
+                self.frame_count = 0
+
+
+
+
     def position(self):
         position_x = self.rect.x
         position_y = self.rect.y
@@ -151,12 +167,21 @@ class Player(pygame.sprite.Sprite):
         return position
 
     def gravity(self):
-        self.movey += 0.3 #falling speed
 
         global height
-        if self.rect.y > height and self.movey >= 0:
+
+        if self.rect.colliderect(ground) == True and self.movey > 0:   #if I collide with the ground STOP
+            self.rect.y = height/5
             self.movey = 0
-            self.rect.y = height - 40
+            print("collide")
+        else:
+            self.movey += 0.3 #falling speed
+
+
+        '''if self.rect.y > height and self.movey >= 0:
+            self.movey = 0
+            self.rect.y = height - 300'''
+
 
 
 
@@ -283,6 +308,10 @@ class Background(pygame.sprite.Sprite):
         self.image.convert()
         #am gonna update the scrolling background
 
+
+ground = pygame.Rect(0,300,width,height-300)
+
+
 '''
 Add class to world
 '''
@@ -290,10 +319,11 @@ Add class to world
 player = Player() #we spawn the Player
 #POSITION
 player.rect.x = width/2 #go to x
-player.rect.y = height/4 #go to y
+player.rect.y = height/7 #go to y
 player_list = pygame.sprite.Group()
 player_list.add(player)
 steps = 10 #pixels to move character
+jump = 20
 slowdown = 0 #slowdown animation with speed_factor (DO NOT TOUCH)
 speed_factor = 6 #touch this to increase/Decrease animation speed
 facing_direction = False
@@ -306,9 +336,11 @@ enemies = []  #list of enemies
 
 for i in range(0,2):
     enemies.append(Enemy(width/2 ,height/2,"serpiente"))
+    enemies.append(Enemy(width/2,height/2,"serpiente_roja"))
 
 enemy_list = pygame.sprite.Group()
 enemy_list.add(enemies)
+
 
 
 # add backround
@@ -353,6 +385,7 @@ while main == True:
         if event.key == pygame.K_UP or event.key == ord('w'):
             #move up
             print "key up"
+            player.control(0,-jump)
 
     if event.type == pygame.KEYUP:
 
@@ -368,6 +401,7 @@ while main == True:
         if event.key == pygame.K_UP or event.key == ord('w'):
             #move up
             print "release key up"
+            player.control(0,jump)
 
 
   # Update.
@@ -375,20 +409,18 @@ while main == True:
   player.gravity()
   player.update()   #updates the character position
 
-
-
   for obj in enemies:
-      obj.gravity()
+      #obj.gravity()
       obj.update()
 
   # draw
   main_surface.fill(BLACK)
   main_surface.blit(background,(0,0))
 
+
   player_list.draw(main_surface) #draw player
   enemy_list.draw(main_surface) #draw enemy
-
-
+  pygame.draw.rect(main_surface,BLUE,(0,300,width,height-300))
   #Show changes and drawings
   main_surface.blit(update_fps(), (10,0))
   screen.blit(main_surface,(0,0))           #draw the main surface on th screen
