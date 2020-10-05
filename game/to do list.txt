@@ -2,4 +2,4 @@ add bounds to player and snake DONE
 
 manage health
 
-gravity and ground WORKING ON IT
+gravity and ground WORKING ON IT (rect dimensions are smaller than the sprite(?))
