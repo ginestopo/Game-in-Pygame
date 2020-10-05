@@ -415,8 +415,9 @@ while main == True:
 
   # Update.
   slowdown += 1 #slows down animation using %
-  player.gravity()
+  #player.gravity()
   player.update()   #updates the character position
+
 
   for obj in enemies:
       #obj.gravity()
@@ -426,9 +427,11 @@ while main == True:
   main_surface.fill(BLACK)
   main_surface.blit(background,(0,0))
 
-
+  pygame.draw.rect(main_surface,BLUE,(player.rect.x,player.rect.y,player.rect.width,player.rect.height)) #show player hitbox
   player_list.draw(main_surface) #draw player
   enemy_list.draw(main_surface) #draw enemy
+
+
   platform_list.draw(main_surface)
   #Show changes and drawings
   main_surface.blit(update_fps(), (10,0))
