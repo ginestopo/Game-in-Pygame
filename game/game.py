@@ -169,9 +169,7 @@ class Player(pygame.sprite.Sprite):
     def gravity(self):
         self.movey += 0.3 #falling speed
 
-        collision = pygame.sprite.spritecollide(self.rect.midbott,platform_list,False)
-
-        if collision:
+        if self.rect.collidepoint(self.rect):
             print("collision")
 
 
