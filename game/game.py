@@ -167,15 +167,12 @@ class Player(pygame.sprite.Sprite):
         return position
 
     def gravity(self):
+        self.movey += 0.3 #falling speed
 
-        global height
+        collision = pygame.sprite.spritecollide(self.rect.midbott,platform_list,False)
 
-        if self.rect.colliderect(ground) == True and self.movey > 0:   #if I collide with the ground STOP
-            self.rect.y = height/5
-            self.movey = 0
-            print("collide")
-        else:
-            self.movey += 0.3 #falling speed
+        if collision:
+            print("collision")
 
 
         '''if self.rect.y > height and self.movey >= 0:
@@ -309,12 +306,26 @@ class Background(pygame.sprite.Sprite):
         #am gonna update the scrolling background
 
 
-ground = pygame.Rect(0,300,width,height-300)
-
+#ground = pygame.Rect(0,300,width,height-300)
+class Platform(pygame.sprite.Sprite):
+    def __init__(self,x,y,w,h):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((w,h))
+        self.image.fill(BLUE)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
 '''
 Add class to world
 '''
+#PLATFORM
+platform_list = pygame.sprite.Group()
+ground = Platform(0,300,width,height-300)
+platform_list.add(ground)
+
+
+
 #SPAWN Player
 player = Player() #we spawn the Player
 #POSITION
@@ -420,7 +431,7 @@ while main == True:
 
   player_list.draw(main_surface) #draw player
   enemy_list.draw(main_surface) #draw enemy
-  pygame.draw.rect(main_surface,BLUE,(0,300,width,height-300))
+  platform_list.draw(main_surface)
   #Show changes and drawings
   main_surface.blit(update_fps(), (10,0))
   screen.blit(main_surface,(0,0))           #draw the main surface on th screen
