@@ -71,12 +71,14 @@ class Player(pygame.sprite.Sprite):
         for i in range(1,5):
 
             img = pygame.image.load(os.path.join('images','sacha'+str(i)+'.png')).convert()
-
+            img = pygame.transform.scale(img, (scaling_factor, scaling_factor)) #scaling sprite
             #set black as transparent backround
             img.convert_alpha()
             img.set_colorkey(ALPHA)
 
+
             self.images.append(img)
+
 
 
         self.index = 0
@@ -101,10 +103,10 @@ class Player(pygame.sprite.Sprite):
             self.rect.x = self.rect.x #stop if the vector and position is incorrect
             if(self.rect.x >= right_margin):
                 scrolling = "right"
-                print(scrolling)
+                #print(scrolling)
             if(self.rect.x <= left_margin):
                 scrolling = "left"
-                print(scrolling)
+                #print(scrolling)
         else:
             self.rect.x = self.rect.x + self.movex
             self.rect.y = self.rect.y + self.movey
@@ -119,8 +121,6 @@ class Player(pygame.sprite.Sprite):
             if self.index  > 2:
                 self.index = 0
             self.image = self.images[self.index]
-            self.image = pygame.transform.scale(self.image, (scaling_factor, scaling_factor)) #scaling the sprite
-
             self.facing_direction = True
 
         #moving right (frames 1,2)
@@ -130,8 +130,6 @@ class Player(pygame.sprite.Sprite):
             if self.index > 2:
                 self.index = 0
             self.image = self.images[self.index]
-            self.image = pygame.transform.scale(self.image, (scaling_factor,scaling_factor)) #scaling the sprite
-
             self.image = pygame.transform.flip(self.image,True,False)  #vertically mirror
             self.facing_direction = False
 
@@ -144,12 +142,11 @@ class Player(pygame.sprite.Sprite):
             if self.index > 3:
                 self.index = 2
             self.image = self.images[self.index]
-            self.image = pygame.transform.scale(self.image, (scaling_factor, scaling_factor)) #scaling the sprite
 
             if self.facing_direction == False:
                 self.image = pygame.transform.flip(self.image,True,False)  #vertically mirror
 
-        #collision
+        #collision for HEATLH
         hit_list = pygame.sprite.spritecollide(self,enemy_list,False)
         for enemy in hit_list:
             if self.frame_count > 30:
@@ -167,17 +164,11 @@ class Player(pygame.sprite.Sprite):
         return position
 
     def gravity(self):
-        self.movey += 0.3 #falling speed
+        self.movey += 0.8 #falling speed
 
-        if self.rect.colliderect(ground):
-            print("collision")
-
-
-        '''if self.rect.y > height and self.movey >= 0:
+        if self.rect.colliderect(ground) and self.movey > 0:
+            #print("collision")
             self.movey = 0
-            self.rect.y = height - 300'''
-
-
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -200,8 +191,10 @@ class Enemy(pygame.sprite.Sprite):
         for i in range(0,2):
 
             img_enemy = pygame.image.load(os.path.join('images',str(img)+str(i)+'.png')).convert()
+            img_enemy = pygame.transform.scale(img_enemy, (scaling_factor, scaling_factor)) #scaling sprite
             img_enemy.convert_alpha()
             img_enemy.set_colorkey(ALPHA)
+
 
             self.images.append(img_enemy)
 
@@ -277,12 +270,10 @@ class Enemy(pygame.sprite.Sprite):
                 if self.index  > 1:
                     self.index = 0
                 self.image = self.images[self.index]
-                self.image = pygame.transform.scale(self.image, (scaling_factor, scaling_factor)) #scaling the sprite
                 if(self.flip_enemy==True):
                     self.image = pygame.transform.flip(self.image,True,False)  #vertically mirror
             else:
                 self.image = self.images[0]
-                self.image = pygame.transform.scale(self.image, (scaling_factor, scaling_factor)) #scaling the sprite
                 if(self.flip_enemy==True):
                     self.image = pygame.transform.flip(self.image,True,False)  #vertically mirror
 
@@ -291,10 +282,8 @@ class Enemy(pygame.sprite.Sprite):
     def gravity(self):
         self.movey += 0.3 #how far the enemy falls
 
-        global height
-        if self.rect.y > height and self.movey >= 0:
+        if self.rect.colliderect(ground) and self.movey > 0:
             self.movey = 0
-            self.rect.y = 50
 
 
 class Background(pygame.sprite.Sprite):
@@ -319,7 +308,7 @@ Add class to world
 '''
 #PLATFORM
 platform_list = pygame.sprite.Group()
-ground = Platform(0,300,width,height-300)
+ground = Platform(-300,300,width+300,height-300) #(x_pos,y_pos,x_dimension,y_Dimension)
 platform_list.add(ground)
 
 
@@ -332,7 +321,8 @@ player.rect.y = height/7 #go to y
 player_list = pygame.sprite.Group()
 player_list.add(player)
 steps = 10 #pixels to move character
-jump = 20
+jump = 15
+jump_hold = True  #for not letting the player fly
 slowdown = 0 #slowdown animation with speed_factor (DO NOT TOUCH)
 speed_factor = 6 #touch this to increase/Decrease animation speed
 facing_direction = False
@@ -344,8 +334,8 @@ steps_enemy = 5
 enemies = []  #list of enemies
 
 for i in range(0,2):
-    enemies.append(Enemy(width/2 ,height/2,"serpiente"))
-    enemies.append(Enemy(width/2,height/2,"serpiente_roja"))
+    enemies.append(Enemy(width/4 ,height/4,"serpiente"))
+    enemies.append(Enemy(width/4,height/4,"serpiente_roja"))
 
 enemy_list = pygame.sprite.Group()
 enemy_list.add(enemies)
@@ -410,29 +400,28 @@ while main == True:
         if event.key == pygame.K_UP or event.key == ord('w'):
             #move up
             print "release key up"
-            player.control(0,jump)
 
 
   # Update.
   slowdown += 1 #slows down animation using %
-  #player.gravity()
+  player.gravity()
   player.update()   #updates the character position
 
 
   for obj in enemies:
-      #obj.gravity()
+      obj.gravity()
       obj.update()
 
   # draw
   main_surface.fill(BLACK)
   main_surface.blit(background,(0,0))
 
-  pygame.draw.rect(main_surface,BLUE,(player.rect.x,player.rect.y,player.rect.width,player.rect.height)) #show player hitbox
+  #pygame.draw.rect(main_surface,BLUE,(player.rect.x,player.rect.y,player.rect.width,player.rect.height)) #show player hitbox
   player_list.draw(main_surface) #draw player
   enemy_list.draw(main_surface) #draw enemy
 
 
-  platform_list.draw(main_surface)
+  #platform_list.draw(main_surface)
   #Show changes and drawings
   main_surface.blit(update_fps(), (10,0))
   screen.blit(main_surface,(0,0))           #draw the main surface on th screen
