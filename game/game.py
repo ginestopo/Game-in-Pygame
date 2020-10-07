@@ -169,6 +169,8 @@ class Player(pygame.sprite.Sprite):
         if self.rect.colliderect(ground) and self.movey > 0:
             #print("collision")
             self.movey = 0
+            global jump_counter
+            jump_counter = 0
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -321,8 +323,9 @@ player.rect.y = height/7 #go to y
 player_list = pygame.sprite.Group()
 player_list.add(player)
 steps = 10 #pixels to move character
-jump = 15
-jump_hold = True  #for not letting the player fly
+jump = 12
+max_jumps = 2 #how many consecutive jumps can you make
+jump_counter = 0
 slowdown = 0 #slowdown animation with speed_factor (DO NOT TOUCH)
 speed_factor = 6 #touch this to increase/Decrease animation speed
 facing_direction = False
@@ -384,7 +387,9 @@ while main == True:
         if event.key == pygame.K_UP or event.key == ord('w'):
             #move up
             print "key up"
-            player.control(0,-jump)
+            if(jump_counter < max_jumps):
+                player.control(0,-jump - player.movey) #susbtract -player.movey for 2nd jump realistic
+                jump_counter += 1
 
     if event.type == pygame.KEYUP:
 
