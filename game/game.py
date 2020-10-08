@@ -421,6 +421,9 @@ while main == True:
   main_surface.fill(BLACK)
   main_surface.blit(background,(0,0))
 
+
+  #hitbox
+  pygame.draw.rect(main_surface,BLUE,(enemies[0].rect.x,enemies[0].rect.y,enemies[0].rect.width,enemies[0].rect.height))
   #pygame.draw.rect(main_surface,BLUE,(player.rect.x,player.rect.y,player.rect.width,player.rect.height)) #show player hitbox
   player_list.draw(main_surface) #draw player
   enemy_list.draw(main_surface) #draw enemy
