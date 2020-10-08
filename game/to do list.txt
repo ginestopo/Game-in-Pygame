@@ -4,4 +4,6 @@ gravity and ground DONE
 
 manage health
 
-bug on bounds 
+bug on bounds
+
+enemies hitboxes (checking...)
