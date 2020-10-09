@@ -205,6 +205,7 @@ class Enemy(pygame.sprite.Sprite):
         self.image = self.images[self.index]
         self.rect = self.image.get_rect()
 
+
         self.rect.x = x
         self.rect.y = y
 
