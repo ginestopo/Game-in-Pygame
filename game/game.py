@@ -7,7 +7,7 @@ import os
 import pygame
 from pygame.locals import *
 import random
- 
+
 
 
 '''
@@ -379,15 +379,15 @@ while main == True:
 
         if event.key == pygame.K_LEFT or event.key == ord('a'):
             #move left
-            print "key left"
+            print ("key left")
             player.control(-steps,0)
         if event.key == pygame.K_RIGHT or event.key == ord('d'):
             #move right
-            print "key right"
+            print ("key right")
             player.control(steps,0)
         if event.key == pygame.K_UP or event.key == ord('w'):
             #move up
-            print "key up"
+            print ("key up")
             if(jump_counter < max_jumps):
                 player.control(0,-jump - player.movey) #susbtract -player.movey for 2nd jump realistic
                 jump_counter += 1
@@ -396,16 +396,16 @@ while main == True:
 
         if event.key == pygame.K_LEFT or event.key == ord('a'):
             #move left
-            print "release key left"
+            print ("release key left")
             player.control(steps,0)
         if event.key == pygame.K_RIGHT or event.key == ord('d'):
             #move right
-            print "release key right"
+            print ("release key right")
             player.control(-steps,0)
 
         if event.key == pygame.K_UP or event.key == ord('w'):
             #move up
-            print "release key up"
+            print ("release key up")
 
 
   # Update.
