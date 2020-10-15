@@ -2,8 +2,10 @@ add bounds to player and snake DONE
 
 gravity and ground DONE
 
+bug on bounds SOLVED
+
+enemies hitboxes (checking...) SOLVED
+
+Check particles jump (not showing)
+
 manage health
-
-bug on bounds
-
-enemies hitboxes (checking...)

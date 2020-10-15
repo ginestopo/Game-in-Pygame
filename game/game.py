@@ -13,6 +13,8 @@ import random
 '''
 Setup
 '''
+RED = (255,0,0)
+GREEN = (0,255,0)
 BLUE  = (25,25,200)
 BLACK = (23,23,23 )
 WHITE = (254,254,254)
@@ -194,7 +196,7 @@ class Enemy(pygame.sprite.Sprite):
         for i in range(0,2):
 
             img_enemy = pygame.image.load(os.path.join('images',str(img)+str(i)+'.png')).convert()
-            img_enemy = pygame.transform.scale(img_enemy, (scaling_factor, scaling_factor)) #scaling sprite
+            img_enemy = pygame.transform.scale(img_enemy, (scaling_factor-40, scaling_factor-40)) #scaling sprite
             img_enemy.convert_alpha()
             img_enemy.set_colorkey(ALPHA)
 
@@ -220,7 +222,6 @@ class Enemy(pygame.sprite.Sprite):
         #code to move enemy
         #self.rect.x = self.rect.x
         self.rect.y += self.movey
-
 
         if(self.frame_count==0):
             self.moving_time = random.randint(10,50)
@@ -292,9 +293,41 @@ class Enemy(pygame.sprite.Sprite):
 
 class Background(pygame.sprite.Sprite):
     def __init__(self,bk_img):
-        self.image = pygame.image.load()
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(os.path.join('images',bk_img+'.png'))
         self.image.convert()
+        global width,height
+        self.image = pygame.transform.scale(self.image,(width,height))
+        self.rect = self.image.get_rect()
         #am gonna update the scrolling background
+
+
+class Particles(pygame.sprite.Sprite):
+    def __init__(self,image,frames,x,y):    #frames = number of images
+        pygame.sprite.Sprite.__init__(self)
+        self.images = []
+        self.frames = frames
+
+        for i in range(0,self.frames):
+
+            img = pygame.image.load(os.path.join('images',str(image)+str(i)+'.png')).convert()
+            img = pygame.transform.scale(img, (scaling_factor, scaling_factor)) #scaling sprite
+            #set black as transparent backround
+            img.convert_alpha()
+            img.set_colorkey(ALPHA)
+            self.images.append(img)
+            self.index = 0
+            self.image = self.images[self.index]
+            self.rect = self.image.get_rect()
+            self.rect.x = x
+            self.rect.y = y
+            
+    def update(self):
+        if (slowdown%speed_factor)==0:
+            self.index += 1
+            print(self.index)
+            if self.index > self.frames-1 :
+                self.index = 0
 
 
 #ground = pygame.Rect(0,300,width,height-300)
@@ -315,6 +348,15 @@ platform_list = pygame.sprite.Group()
 ground = Platform(-300,300,width+300,height-300) #(x_pos,y_pos,x_dimension,y_Dimension)
 platform_list.add(ground)
 
+#BACKGORUND
+background = Background("topera_background")
+background_list = pygame.sprite.Group()
+background_list.add(background)
+
+#Particles
+doublejumpparticles = Particles("doublejumpparticles",7,20,20)
+particles_list = pygame.sprite.Group()
+particles_list.add(doublejumpparticles)
 
 
 #SPAWN Player
@@ -347,9 +389,6 @@ enemy_list.add(enemies)
 
 
 
-# add backround
-background = pygame.image.load(os.path.join('images','topera_background.png')).convert()
-background = pygame.transform.scale(background,(width,height))
 
 
 
@@ -393,6 +432,7 @@ while main == True:
                 player.control(0,-jump - player.movey) #susbtract -player.movey for 2nd jump realistic
                 jump_counter += 1
 
+
     if event.type == pygame.KEYUP:
 
         if event.key == pygame.K_LEFT or event.key == ord('a'):
@@ -414,6 +454,8 @@ while main == True:
   player.gravity()
   player.update()   #updates the character position
 
+  #particle effect
+  doublejumpparticles.update()
 
   for obj in enemies:
       obj.gravity()
@@ -421,16 +463,15 @@ while main == True:
 
   # draw
   main_surface.fill(BLACK)
-  main_surface.blit(background,(0,0))
+  background_list.draw(main_surface)
 
-
-  #hitbox
+  #hitbox enemy
   pygame.draw.rect(main_surface,BLUE,(enemies[0].rect.x,enemies[0].rect.y,enemies[0].rect.width,enemies[0].rect.height))
-  #pygame.draw.rect(main_surface,BLUE,(player.rect.x,player.rect.y,player.rect.width,player.rect.height)) #show player hitbox
+  #pygame.draw.rect(main_surface,RED,(player.rect.x,player.rect.y,player.rect.width,player.rect.height)) #show player hitbox
   player_list.draw(main_surface) #draw player
   enemy_list.draw(main_surface) #draw enemy
 
-
+  particles_list.draw(main_surface)
   #platform_list.draw(main_surface)
   #Show changes and drawings
   main_surface.blit(update_fps(), (10,0))
