@@ -101,12 +101,13 @@ class Player(pygame.sprite.Sprite):
         #stop at the edge (for scrolling animation)
         if(self.rect.x >= right_margin) and (self.movex>0) or (self.rect.x <= left_margin) and (self.movex<0):
             self.rect.x = self.rect.x #stop if the vector and position is incorrect
+            self.rect.y = self.rect.y + self.movey
             if(self.rect.x >= right_margin):
                 scrolling = "right"
-                #print(scrolling)
+                print(scrolling)
             if(self.rect.x <= left_margin):
                 scrolling = "left"
-                #print(scrolling)
+                print(scrolling)
         else:
             self.rect.x = self.rect.x + self.movex
             self.rect.y = self.rect.y + self.movey
