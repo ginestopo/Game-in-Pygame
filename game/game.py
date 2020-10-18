@@ -20,6 +20,7 @@ BLACK = (23,23,23 )
 WHITE = (254,254,254)
 
 ALPHA = (0, 0, 0)   #for sprite transparency
+PINK = (253, 0, 171)
 
 pygame.init() #initialize pygame
 
@@ -310,24 +311,28 @@ class Particles(pygame.sprite.Sprite):
 
         for i in range(0,self.frames):
 
-            img = pygame.image.load(os.path.join('images',str(image)+str(i)+'.png')).convert()
+            img = pygame.image.load(os.path.join('images',str(image)+str(i)+'.png'))
             img = pygame.transform.scale(img, (scaling_factor, scaling_factor)) #scaling sprite
             #set black as transparent backround
+            img.convert()
             img.convert_alpha()
-            img.set_colorkey(ALPHA)
+            img.set_colorkey(PINK)
             self.images.append(img)
-            self.index = 0
-            self.image = self.images[self.index]
-            self.rect = self.image.get_rect()
-            self.rect.x = x
-            self.rect.y = y
-            
+
+        self.index = 0
+        self.image = self.images[self.index]
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
     def update(self):
         if (slowdown%speed_factor)==0:
             self.index += 1
             print(self.index)
             if self.index > self.frames-1 :
                 self.index = 0
+
+            self.image = self.images[self.index]
 
 
 #ground = pygame.Rect(0,300,width,height-300)
@@ -348,7 +353,7 @@ platform_list = pygame.sprite.Group()
 ground = Platform(-300,300,width+300,height-300) #(x_pos,y_pos,x_dimension,y_Dimension)
 platform_list.add(ground)
 
-#BACKGORUND
+#BACKGROUND
 background = Background("topera_background")
 background_list = pygame.sprite.Group()
 background_list.add(background)
