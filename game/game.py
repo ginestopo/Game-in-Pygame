@@ -167,6 +167,12 @@ class Player(pygame.sprite.Sprite):
         position = [position_x,position_y]
         return position
 
+    def velocity(self):
+        velocity_x = self.move.x
+        velocity_y = self.move.y
+        velocity = [velocity_x,velocity_y]
+        return velocity
+
     def gravity(self):
         self.movey += 0.8 #falling speed
 
@@ -304,10 +310,11 @@ class Background(pygame.sprite.Sprite):
 
 
 class Particles(pygame.sprite.Sprite):
-    def __init__(self,image,frames,x,y):    #frames = number of images
+    def __init__(self,image,frames,x,y):    #frames = number of images || number of times to repeat animation
         pygame.sprite.Sprite.__init__(self)
         self.images = []
         self.frames = frames
+
 
         for i in range(0,self.frames):
 
@@ -325,7 +332,9 @@ class Particles(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
-    def update(self):
+
+    def update(self):  #iterations is the number of times to repear animation
+
         if (slowdown%speed_factor)==0:
             self.index += 1
             print(self.index)
@@ -333,6 +342,8 @@ class Particles(pygame.sprite.Sprite):
                 self.index = 0
 
             self.image = self.images[self.index]
+
+
 
 
 #ground = pygame.Rect(0,300,width,height-300)
@@ -362,6 +373,7 @@ background_list.add(background)
 doublejumpparticles = Particles("doublejumpparticles",7,20,20)
 particles_list = pygame.sprite.Group()
 particles_list.add(doublejumpparticles)
+play_jump_particle = False
 
 
 #SPAWN Player
@@ -437,7 +449,6 @@ while main == True:
                 player.control(0,-jump - player.movey) #susbtract -player.movey for 2nd jump realistic
                 jump_counter += 1
 
-
     if event.type == pygame.KEYUP:
 
         if event.key == pygame.K_LEFT or event.key == ord('a'):
@@ -452,6 +463,7 @@ while main == True:
         if event.key == pygame.K_UP or event.key == ord('w'):
             #move up
             print ("release key up")
+
 
 
   # Update.
