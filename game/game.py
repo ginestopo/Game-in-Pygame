@@ -306,7 +306,6 @@ class Background(pygame.sprite.Sprite):
         global width,height
         self.image = pygame.transform.scale(self.image,(width,height))
         self.rect = self.image.get_rect()
-        #am gonna update the scrolling background
 
 
 class Particles(pygame.sprite.Sprite):
@@ -319,7 +318,7 @@ class Particles(pygame.sprite.Sprite):
         for i in range(0,self.frames):
 
             img = pygame.image.load(os.path.join('images',str(image)+str(i)+'.png'))
-            img = pygame.transform.scale(img, (scaling_factor, scaling_factor)) #scaling sprite
+            img = pygame.transform.scale(img, (scaling_factor-30, scaling_factor-30)) #scaling sprite
             #set black as transparent backround
             img.convert()
             img.convert_alpha()
@@ -329,24 +328,26 @@ class Particles(pygame.sprite.Sprite):
         self.index = 0
         self.image = self.images[self.index]
         self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.x = 0
+        self.rect.y = 0
 
 
-    def update(self):  #iterations is the number of times to repear animation
+    def update(self,jumping1):  #iterations is the number of times to repear animation
 
-        if (slowdown%speed_factor)==0:
+        if ((slowdown%speed_factor))==0 and (jumping1==True):
             self.index += 1
-            print(self.index)
             if self.index > self.frames-1 :
                 self.index = 0
-
+                global jumping
+                jumping = False
             self.image = self.images[self.index]
 
+    def update_jump_particle_position(self,x,y):
+            if jumping != True:
+                self.rect.x = x
+                self.rect.y = y
 
 
-
-#ground = pygame.Rect(0,300,width,height-300)
 class Platform(pygame.sprite.Sprite):
     def __init__(self,x,y,w,h):
         pygame.sprite.Sprite.__init__(self)
@@ -370,10 +371,11 @@ background_list = pygame.sprite.Group()
 background_list.add(background)
 
 #Particles
+jumping = False
 doublejumpparticles = Particles("doublejumpparticles",7,20,20)
 particles_list = pygame.sprite.Group()
 particles_list.add(doublejumpparticles)
-play_jump_particle = False
+
 
 
 #SPAWN Player
@@ -448,6 +450,9 @@ while main == True:
             if(jump_counter < max_jumps):
                 player.control(0,-jump - player.movey) #susbtract -player.movey for 2nd jump realistic
                 jump_counter += 1
+                if jump_counter == 2 :
+                    jumping = True
+
 
     if event.type == pygame.KEYUP:
 
@@ -472,7 +477,8 @@ while main == True:
   player.update()   #updates the character position
 
   #particle effect
-  doublejumpparticles.update()
+  doublejumpparticles.update(jumping)
+  doublejumpparticles.update_jump_particle_position(player.position()[0],player.position()[1]+110)
 
   for obj in enemies:
       obj.gravity()
@@ -489,6 +495,7 @@ while main == True:
   enemy_list.draw(main_surface) #draw enemy
 
   particles_list.draw(main_surface)
+
   #platform_list.draw(main_surface)
   #Show changes and drawings
   main_surface.blit(update_fps(), (10,0))
