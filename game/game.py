@@ -32,7 +32,7 @@ screen = pygame.display.set_mode((width, height))  #this is the screen itself
 pygame.display.set_caption("My game, by Gines Diaz")
 
 main_surface = pygame.Surface((width,height))      #this is the area of the screen we are drawing
-
+main_surface_rect = main_surface.get_rect()
 
 
 scaling_factor = 128 #factor for scaling pixel art (by default displays tiny)
@@ -290,6 +290,11 @@ class Enemy(pygame.sprite.Sprite):
                     self.image = pygame.transform.flip(self.image,True,False)  #vertically mirror
 
         self.frame_count += 1
+
+        #checking if the enemy is outside of the screen
+        global main_surface_rect
+        if not main_surface_rect.contains(self.rect):
+            self.kill() 
 
     def gravity(self):
         self.movey += 0.3 #how far the enemy falls
