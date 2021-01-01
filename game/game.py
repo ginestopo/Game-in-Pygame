@@ -294,14 +294,13 @@ class Enemy(pygame.sprite.Sprite):
         #checking if the enemy is outside of the screen
         global main_surface_rect
         if not main_surface_rect.contains(self.rect):
-            self.kill() 
+            self.kill()
 
     def gravity(self):
         self.movey += 0.3 #how far the enemy falls
 
         if self.rect.colliderect(ground) and self.movey > 0:
             self.movey = 0
-
 
 class Background(pygame.sprite.Sprite):
     def __init__(self,bk_img):
@@ -352,6 +351,14 @@ class Particles(pygame.sprite.Sprite):
                 self.rect.x = x
                 self.rect.y = y
 
+    def is_collided_with(self,sprite):
+        return self.rect.colliderect(sprite.rect)
+
+    def sprite_is_displaying(self): #true if animation is displaying
+        if self.image != self.images[0]:
+            return True
+        else:
+            return False
 
 class Platform(pygame.sprite.Sprite):
     def __init__(self,x,y,w,h):
@@ -494,12 +501,16 @@ while main == True:
   background_list.draw(main_surface)
 
   #hitboxes
-  #pygame.draw.rect(main_surface,BLUE,(enemies[0].rect.x,enemies[0].rect.y,enemies[0].rect.width,enemies[0].rect.height))
+  pygame.draw.rect(main_surface,BLUE,(enemies[0].rect.x,enemies[0].rect.y,enemies[0].rect.width,enemies[0].rect.height))
   #pygame.draw.rect(main_surface,RED,(player.rect.x,player.rect.y,player.rect.width,player.rect.height)) #show player hitbox
   player_list.draw(main_surface) #draw player
   enemy_list.draw(main_surface) #draw enemy
 
   particles_list.draw(main_surface)
+
+  if doublejumpparticles.is_collided_with(enemies[0]) and doublejumpparticles.sprite_is_displaying():
+      enemies[0].kill()
+
 
   #platform_list.draw(main_surface)
   #Show changes and drawings
