@@ -215,6 +215,7 @@ class Enemy(pygame.sprite.Sprite):
         self.image = self.images[self.index]
         self.rect = self.image.get_rect()
 
+        self.rect.width = self.rect.width/2
 
         self.rect.x = x
         self.rect.y = y
@@ -332,6 +333,10 @@ class Particles(pygame.sprite.Sprite):
         self.index = 0
         self.image = self.images[self.index]
         self.rect = self.image.get_rect()
+
+        #adjusting hitbox fart
+        self.rect.width = self.rect.width/2
+
         self.rect.x = 0
         self.rect.y = 0
 
@@ -501,6 +506,7 @@ while main == True:
   background_list.draw(main_surface)
 
   #hitboxes
+  pygame.draw.rect(main_surface,BLUE,(doublejumpparticles.rect.x,doublejumpparticles.rect.x,doublejumpparticles.rect.width,doublejumpparticles.rect.height))
   pygame.draw.rect(main_surface,BLUE,(enemies[0].rect.x,enemies[0].rect.y,enemies[0].rect.width,enemies[0].rect.height))
   #pygame.draw.rect(main_surface,RED,(player.rect.x,player.rect.y,player.rect.width,player.rect.height)) #show player hitbox
   player_list.draw(main_surface) #draw player
@@ -508,8 +514,9 @@ while main == True:
 
   particles_list.draw(main_surface)
 
-  if doublejumpparticles.is_collided_with(enemies[0]) and doublejumpparticles.sprite_is_displaying():
-      enemies[0].kill()
+  for i in range(0,4):
+      if doublejumpparticles.is_collided_with(enemies[i]) and doublejumpparticles.sprite_is_displaying():
+          enemies[i].kill()
 
 
   #platform_list.draw(main_surface)
