@@ -257,6 +257,12 @@ class Enemy(pygame.sprite.Sprite):
         if(self.frame_count<=self.moving_time):
             if(self.flip_enemy==True):
                 self.rect.x += -steps_enemy
+
+                #prevent snake from going outside
+                if(self.rect.x < 0):
+                    self.rect.x = -self.rect.x
+                if(self.rect.x > 500):
+                    self.rect.x = self.rect.x
                 #print("<----")
             else:
                 self.rect.x += steps_enemy
@@ -465,7 +471,7 @@ while main == True:
             #move up
             print ("key up")
             if(jump_counter < max_jumps):
-                player.control(0,-jump - player.movey) #susbtract -player.movey for 2nd jump realistic
+                player.control(0,-jump - player.movey-1.2) #susbtract -player.movey for 2nd jump realistic
                 jump_counter += 1
                 if jump_counter == 2 :
                     jumping = True
@@ -506,8 +512,8 @@ while main == True:
   background_list.draw(main_surface)
 
   #hitboxes
-  pygame.draw.rect(main_surface,BLUE,(doublejumpparticles.rect.x,doublejumpparticles.rect.x,doublejumpparticles.rect.width,doublejumpparticles.rect.height))
-  pygame.draw.rect(main_surface,BLUE,(enemies[0].rect.x,enemies[0].rect.y,enemies[0].rect.width,enemies[0].rect.height))
+  #pygame.draw.rect(main_surface,BLUE,(doublejumpparticles.rect.x,doublejumpparticles.rect.x,doublejumpparticles.rect.width,doublejumpparticles.rect.height))
+  #pygame.draw.rect(main_surface,BLUE,(enemies[0].rect.x,enemies[0].rect.y,enemies[0].rect.width,enemies[0].rect.height))
   #pygame.draw.rect(main_surface,RED,(player.rect.x,player.rect.y,player.rect.width,player.rect.height)) #show player hitbox
   player_list.draw(main_surface) #draw player
   enemy_list.draw(main_surface) #draw enemy
