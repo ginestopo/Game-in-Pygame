@@ -154,7 +154,7 @@ class Player(pygame.sprite.Sprite):
         hit_list = pygame.sprite.spritecollide(self,enemy_list,False)
         for enemy in hit_list:
             if self.frame_count > 30:
-                self.health -= 1
+                self.health -= 3        #difficulty (1 easiest, 10 difficult)
                 print(self.health)
                 self.frame_count = 0
 
@@ -390,7 +390,7 @@ class Hearts(pygame.sprite.Sprite):
             a = str(0)+str(i) if (i<10) else str(i)
             img = pygame.image.load(os.path.join('images','hearts'+a+'.png'))
             global width,height
-            img = pygame.transform.scale(img, (width-10,height-10)) #scaling sprite
+            img = pygame.transform.scale(img, (width-130,height-100)) #scaling sprite
             #set black as transparent backround
             img.convert()
             img.convert_alpha()
