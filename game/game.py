@@ -380,6 +380,31 @@ class Platform(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
+class Hearts(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.images = []
+        self.frames = 13 #from 1-13
+
+        for i in range(0,self.frames-1):
+            a = str(0)+str(i) if (i<10) else str(i)
+            img = pygame.image.load(os.path.join('images','hearts'+a+'.png'))
+            global width,height
+            img = pygame.transform.scale(img, (width-10,height-10)) #scaling sprite
+            #set black as transparent backround
+            img.convert()
+            img.convert_alpha()
+            img.set_colorkey(ALPHA)
+            self.images.append(img)
+
+        self.index = 0
+        self.image = self.images[self.index]
+        self.rect = self.image.get_rect()
+
+    def display_hearts(self,hearts_left): #n from 12 to 0
+            for i in range(0,self.frames):
+                if(i == hearts_left):
+                    self.image = self.images[i]
 '''
 Add class to world
 '''
@@ -430,8 +455,10 @@ enemy_list = pygame.sprite.Group()
 enemy_list.add(enemies)
 
 
-
-
+#GUI hearts
+hearts = Hearts()
+hearts_list = pygame.sprite.Group()
+hearts_list.add(hearts)
 
 
 '''
@@ -527,6 +554,12 @@ while main == True:
 
   #platform_list.draw(main_surface)
   #Show changes and drawings
+
+  #hearts
+  hearts.display_hearts(-player.health+10)
+  hearts_list.draw(main_surface)
+
+
   main_surface.blit(update_fps(), (10,0))
   screen.blit(main_surface,(0,0))           #draw the main surface on th screen
 
