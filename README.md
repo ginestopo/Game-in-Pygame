@@ -10,4 +10,5 @@ are entirely made by me, Ginés Díaz.
 
 Feel free to try it, modify it and show me your ideas! :)
 
-https://piskel-imgstore-b.appspot.com/img/04a01a05-5aa8-11eb-a24b-b1973b1681e1.gif
+![alt text](https://piskel-imgstore-b.appspot.com/img/04a01a05-5aa8-11eb-a24b-b1973b1681e1.gif)
+
