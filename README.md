@@ -1,4 +1,4 @@
-# Game-in-Pygame ![alt text](https://piskel-imgstore-b.appspot.com/img/04a01a05-5aa8-11eb-a24b-b1973b1681e1.gif)
+![alt text](https://piskel-imgstore-b.appspot.com/img/694a6b59-5aa8-11eb-a41a-b1973b1681e1.gif) # Game-in-Pygame ![alt text](https://piskel-imgstore-b.appspot.com/img/04a01a05-5aa8-11eb-a24b-b1973b1681e1.gif)
 A project in python to learn about pygame features and maybe complete a game :)
 
 I had a new year resolution on 2020: I wanted to start creating my own videogames.
