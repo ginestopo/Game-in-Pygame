@@ -386,11 +386,15 @@ class Hearts(pygame.sprite.Sprite):
         self.images = []
         self.frames = 13 #from 1-13
 
-        for i in range(0,self.frames-1):
+        for i in range(0,self.frames):
             a = str(0)+str(i) if (i<10) else str(i)
             img = pygame.image.load(os.path.join('images','hearts'+a+'.png'))
             global width,height
             img = pygame.transform.scale(img, (width-130,height-100)) #scaling sprite
+
+            if(i == 12): #scaling end game screen
+                img = pygame.transform.scale(img, (width,height)) #scaling sprite
+                
             #set black as transparent backround
             img.convert()
             img.convert_alpha()
@@ -405,6 +409,8 @@ class Hearts(pygame.sprite.Sprite):
             for i in range(0,self.frames):
                 if(i == hearts_left):
                     self.image = self.images[i]
+
+
 '''
 Add class to world
 '''
@@ -460,6 +466,8 @@ hearts = Hearts()
 hearts_list = pygame.sprite.Group()
 hearts_list.add(hearts)
 
+#screen shake
+screenshake = 0
 
 '''
 Main Loop__________________________________________________________________________________
@@ -559,9 +567,22 @@ while main == True:
   hearts.display_hearts(-player.health+10)
   hearts_list.draw(main_surface)
 
+  #screen shake pygame.sprite.spritecollide(self,enemy_list,False)
+  if pygame.sprite.spritecollide(player,enemy_list,False):
+      screenshake = 30
+
+  if screenshake > 0:
+      screenshake -= 1
+
+  render_offset = [0,0]
+
+  if screenshake:
+      render_offset[0] = random.randint(0,8) - 4
+      render_offset[1] = random.randint(0,8) - 4
+
 
   main_surface.blit(update_fps(), (10,0))
-  screen.blit(main_surface,(0,0))           #draw the main surface on th screen
+  screen.blit(main_surface,render_offset)           #draw the main surface on th screen
 
   pygame.display.flip() #show changes in screen
   fpsClock.tick(fps)
